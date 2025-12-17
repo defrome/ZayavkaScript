@@ -17,10 +17,7 @@ class Master(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String)
 
-    times = relationship("MasterTime",
-                         secondary=master_time_association,
-                         back_populates="masters")
-
+    times = relationship("MasterTime", secondary=master_time_association, back_populates="masters")
     applications = relationship("Application", back_populates="master")
 
 
@@ -30,8 +27,5 @@ class MasterTime(Base):
     id = Column(Integer, primary_key=True)
     time_slot = Column(String)
 
-    masters = relationship("Master",
-                           secondary=master_time_association,
-                           back_populates="times")
-
+    masters = relationship("Master", secondary=master_time_association, back_populates="times")
     applications = relationship("Application", back_populates="time_slot_obj")
