@@ -26,8 +26,6 @@ def create_master(
     """
     Создать мастера парикмахера
     """
-
-    # Проверяем, существует ли уже мастер с таким именем
     existing_master = db.query(Master).filter(Master.name == name).first()
     if existing_master:
         raise HTTPException(

@@ -1,13 +1,9 @@
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import asynccontextmanager
-from typing import Optional
-
-from fastapi import FastAPI, Depends, Form
-from sqlalchemy.orm import Session
-from database.db import create_tables, get_db
-from models.masters import Master
-from routes import master_router
+from fastapi import FastAPI
+from database.db import create_tables
+from routes import master_router, application_router
 
 
 @asynccontextmanager
@@ -20,3 +16,4 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 app.include_router(master_router.router)
+app.include_router(application_router.router)

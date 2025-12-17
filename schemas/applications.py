@@ -1,7 +1,12 @@
 from pydantic import BaseModel
-from typing import Union
+from typing import Union, Optional
 
-class ApplicationUserData(BaseModel):
-    name: str
-    telephone_number: Union[str]
-    time_slot: Union[str]
+
+class ApplicationCreate(BaseModel):
+    service: str
+    price: int
+    date: Optional[str] = None
+    user_name: str
+    telephone_number: str
+    time_slot: str
+    master_name: str
