@@ -7,10 +7,10 @@ class Application(Base):
     __tablename__ = "applications"
 
     id = Column(Integer, primary_key=True, index=True)
-    service = Column(String(30))
     price = Column(Integer)
     date = Column(String)
 
+    service = Column(String, ForeignKey("services.id"))
     user_id = Column(Integer, ForeignKey('users.id'))
     master_id = Column(Integer, ForeignKey('masters.id'))
     time_id = Column(Integer, ForeignKey('master_times.id'))
