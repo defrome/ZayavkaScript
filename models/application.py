@@ -7,9 +7,9 @@ class Application(Base):
     __tablename__ = "applications"
 
     id = Column(Integer, primary_key=True, index=True)
-    price = Column(Integer)
     date = Column(String)
 
+    price = Column(Integer, ForeignKey("services.price"))
     service = Column(String, ForeignKey("services.id"))
     user_id = Column(Integer, ForeignKey('users.id'))
     master_id = Column(Integer, ForeignKey('masters.id'))

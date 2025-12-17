@@ -3,8 +3,7 @@ from typing import Union, Optional
 
 
 class ApplicationCreate(BaseModel):
-    service: str
-    price: int
+    service_id: int
     date: Optional[str] = None
     name: str
     telephone_number: str

@@ -16,7 +16,6 @@ def get_all_masters(
     Получить список всех мастеров с их расписанием
     """
     masters = db.query(Master).all()
-
     return masters
 
 
