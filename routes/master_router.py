@@ -1,11 +1,12 @@
-from typing import List
+from typing import List, Dict, Any
 from fastapi import APIRouter, Depends, Form, HTTPException, status
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from database.db import get_db
 from models import Master, MasterTime
-from schemas.masters import MasterResponse, MasterTimeCreate, MasterTimeResponse
+from schemas.masters import MasterResponse, MasterTimeCreate
 
 router = APIRouter(prefix="/masters", tags=["masters"])
+
 
 @router.get("/", response_model=List[MasterResponse])
 def get_all_masters(
@@ -15,6 +16,7 @@ def get_all_masters(
     Получить список всех мастеров с их расписанием
     """
     masters = db.query(Master).all()
+
     return masters
 
 
@@ -41,7 +43,7 @@ def create_master(
     return master
 
 
-@router.post("/{master_id}/times/", response_model=MasterTimeResponse)
+@router.post("/{master_id}/times/", response_model=Dict[str, Any])
 def add_timeslot_to_specific_master(
         master_id: int,
         time_slot_data: MasterTimeCreate,
@@ -53,6 +55,7 @@ def add_timeslot_to_specific_master(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Мастер с id {master_id} не найден"
         )
+
     existing_time = db.query(MasterTime).filter(
         MasterTime.time_slot == time_slot_data.time_slot
     ).first()
@@ -64,7 +67,6 @@ def add_timeslot_to_specific_master(
                 detail=f"Время '{time_slot_data.time_slot}' уже добавлено этому мастеру"
             )
         time_obj = existing_time
-
     else:
         time_obj = MasterTime(time_slot=time_slot_data.time_slot)
         db.add(time_obj)
@@ -76,7 +78,11 @@ def add_timeslot_to_specific_master(
         db.commit()
         db.refresh(time_obj)
 
-        return time_obj
+        return {
+            "id": time_obj.id,
+            "time_slot": time_obj.time_slot,
+            "master_id": master_id
+        }
 
     except Exception as e:
         db.rollback()
