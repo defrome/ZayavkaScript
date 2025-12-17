@@ -21,7 +21,7 @@ class ApplicationService:
         """
         self.service = service
         self.price = price
-        self.date = date or datetime.now().strftime("%Y-%m-%d")
+        self.date = date or datetime.now().strftime("%d/%m/%Y")
 
     def create_application(self, db: Session, name: str, telephone_number: str,
                            time_slot: str, master_name: str) -> Dict[str, Any]:

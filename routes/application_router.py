@@ -5,10 +5,10 @@ from database.db import get_db
 from schemas.applications import ApplicationCreate
 from services.applications import ApplicationService
 
-router = APIRouter()
+router = APIRouter(prefix="/applications", tags=["applications"])
 
 @router.post("/create_application", status_code=status.HTTP_201_CREATED)
-def create_application_json(
+def create_application(
         application_data: ApplicationCreate,
         db: Session = Depends(get_db)
 ):
@@ -23,7 +23,7 @@ def create_application_json(
 
     result = app_service.create_application(
         db=db,
-        name=application_data.user_name,
+        name=application_data.name,
         telephone_number=application_data.telephone_number,
         time_slot=application_data.time_slot,
         master_name=application_data.master_name
