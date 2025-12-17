@@ -4,9 +4,9 @@ from sqlalchemy.orm import Session, joinedload
 from database.db import get_db
 from models import Master, MasterTime
 from schemas.masters import MasterResponse, MasterTimeCreate
+from services.masters import MasterService
 
 router = APIRouter(prefix="/masters", tags=["masters"])
-
 
 @router.get("/", response_model=List[MasterResponse])
 def get_all_masters(
@@ -20,7 +20,32 @@ def get_all_masters(
     return masters
 
 
-@router.post("/create/", response_model=MasterResponse)
+@router.get("/{master_id}/times/", response_model=Dict[str, Any])
+def get_master_times(
+    master_id: int,
+    db: Session = Depends(get_db)
+):
+    """
+    Получить все времена мастера
+    """
+    master_service = MasterService(db)
+    return master_service.get_master_times(master_id)
+
+
+@router.delete("/{master_id}/times/{time_slot_id}/", response_model=Dict[str, Any])
+def remove_time_from_master(
+    master_id: int,
+    time_slot_id: int,
+    db: Session = Depends(get_db)
+):
+    """
+    Удалить время у мастера
+    """
+    master_service = MasterService(db)
+    return master_service.remove_time_from_master(master_id, time_slot_id)
+
+
+@router.post("/create/", response_model=Dict[str, Any])
 def create_master(
         name: str = Form(...),
         db: Session = Depends(get_db)
@@ -28,19 +53,11 @@ def create_master(
     """
     Создать мастера парикмахера
     """
-    existing_master = db.query(Master).filter(Master.name == name).first()
-    if existing_master:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Мастер с именем '{name}' уже существует"
-        )
+    master_service = MasterService(db)
 
-    master = Master(name=name)
-    db.add(master)
-    db.commit()
-    db.refresh(master)
+    result = master_service.create_master(name)
 
-    return master
+    return result
 
 
 @router.post("/{master_id}/times/", response_model=Dict[str, Any])
@@ -49,44 +66,14 @@ def add_timeslot_to_specific_master(
         time_slot_data: MasterTimeCreate,
         db: Session = Depends(get_db)
 ):
-    master = db.query(Master).filter(Master.id == master_id).first()
-    if not master:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Мастер с id {master_id} не найден"
-        )
+    """
+    Добавить временной слот мастеру
+    """
+    master_service = MasterService(db)
 
-    existing_time = db.query(MasterTime).filter(
-        MasterTime.time_slot == time_slot_data.time_slot
-    ).first()
+    result = master_service.add_time_to_master(
+        master_id=master_id,
+        time_slot=time_slot_data.time_slot
+    )
 
-    if existing_time:
-        if existing_time in master.times:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Время '{time_slot_data.time_slot}' уже добавлено этому мастеру"
-            )
-        time_obj = existing_time
-    else:
-        time_obj = MasterTime(time_slot=time_slot_data.time_slot)
-        db.add(time_obj)
-        db.commit()
-        db.refresh(time_obj)
-
-    try:
-        master.times.append(time_obj)
-        db.commit()
-        db.refresh(time_obj)
-
-        return {
-            "id": time_obj.id,
-            "time_slot": time_obj.time_slot,
-            "master_id": master_id
-        }
-
-    except Exception as e:
-        db.rollback()
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Ошибка при связывании времени с мастером: {str(e)}"
-        )
+    return result
