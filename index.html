@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YOUR STYLE | Современная парикмахерская в Москве</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
         :root {
             --primary: #1a1a1a;
@@ -18,6 +20,10 @@
             --error: #ef4444;
             --success: #10b981;
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            /* Цвета брендов */
+            --vk-color: #0077FF;
+            --tg-color: #229ED9;
+            --wa-color: #25D366;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -46,8 +52,16 @@
         }
 
         .logo { font-weight: 700; font-size: 24px; letter-spacing: -1px; }
-        .nav-links a { text-decoration: none; color: var(--text-main); margin-left: 30px; font-size: 14px; font-weight: 500; transition: var(--transition); }
+        .nav-links { display: flex; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--text-main); margin-left: 25px; font-size: 14px; font-weight: 500; transition: var(--transition); }
         .nav-links a:hover { color: var(--text-muted); }
+
+        /* Иконки в шапке */
+        .social-header { margin-left: 20px; display: flex; gap: 15px; border-left: 1px solid #e2e8f0; padding-left: 20px; }
+        .social-header a { margin: 0; font-size: 18px; }
+        .social-header a.vk:hover { color: var(--vk-color); }
+        .social-header a.tg:hover { color: var(--tg-color); }
+        .social-header a.wa:hover { color: var(--wa-color); }
 
         /* --- Hero Section --- */
         .hero {
@@ -91,7 +105,6 @@
             margin: 0 auto;
         }
 
-        /* --- Стили Карточки (Объединенные) --- */
         .service-card {
             background: var(--card-bg);
             border-radius: 24px;
@@ -152,6 +165,38 @@
         }
 
         .btn-select:hover { background: var(--accent); color: white; }
+
+        /* --- Footer / Контакты --- */
+        footer {
+            padding: 60px 5%;
+            background: var(--bg);
+            border-top: 1px solid #f1f5f9;
+            text-align: center;
+        }
+
+        .footer-socials {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .footer-socials a {
+            font-size: 28px;
+            color: var(--text-main);
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .footer-socials a:hover { transform: translateY(-5px); }
+        .footer-socials a.vk-f:hover { color: var(--vk-color); }
+        .footer-socials a.tg-f:hover { color: var(--tg-color); }
+        .footer-socials a.wa-f:hover { color: var(--wa-color); }
+
+        .footer-info {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
 
         /* --- Модальное окно --- */
         .modal-overlay {
@@ -220,9 +265,10 @@
         .loader { text-align: center; padding: 40px; color: var(--text-muted); grid-column: 1 / -1; }
 
         @media (max-width: 768px) {
-            .nav-links { display: none; }
+            .nav-links a:not(.social-link) { display: none; }
             .hero h1 { font-size: 42px; }
             .services-section { padding: 60px 20px; }
+            .social-header { border: none; padding: 0; }
         }
     </style>
 </head>
@@ -232,15 +278,19 @@
         <div class="logo">YOUR STYLE.</div>
         <nav class="nav-links">
             <a href="#services">Услуги</a>
-            <a href="#">Мастера</a>
-            <a href="#">Контакты</a>
+            <a href="#contacts">Контакты</a>
+            <div class="social-header">
+                <a href="https://vk.com/your_alias" target="_blank" class="social-link vk" title="ВКонтакте"><i class="fa-brands fa-vk"></i></a>
+                <a href="https://t.me/your_username" target="_blank" class="social-link tg" title="Telegram"><i class="fa-brands fa-telegram"></i></a>
+                <a href="https://wa.me/79991234567" target="_blank" class="social-link wa" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+            </div>
+            <button class="btn-main" style="padding: 10px 25px; font-size: 14px; margin-left: 20px;" onclick="toggleModal()">Записаться</button>
         </nav>
-        <button class="btn-main" style="padding: 10px 25px; font-size: 14px;" onclick="toggleModal()">Записаться</button>
     </header>
 
     <section class="hero">
         <h1>Стиль, доступный каждому</h1>
-        <p>Премиальное качество процедур в самом центре Москвы. Запишитесь онлайн за 30 секунд.</p>
+        <p>Премиальное качество процедур в самом центре Москвы. Запишитесь онлайн за 30 секунд или напишите нам в мессенджеры.</p>
         <button class="btn-main" onclick="toggleModal()">Записаться на визит</button>
     </section>
 
@@ -253,6 +303,21 @@
             <div class="loader">Загрузка прейскуранта...</div>
         </div>
     </section>
+
+    <footer id="contacts">
+        <div class="logo">YOUR STYLE.</div>
+        <p style="margin-top: 10px;">Москва, ул. Примерная, д. 10</p>
+
+        <div class="footer-socials">
+            <a href="https://vk.com/your_alias" target="_blank" class="vk-f"><i class="fa-brands fa-vk"></i></a>
+            <a href="https://t.me/your_username" target="_blank" class="tg-f"><i class="fa-brands fa-telegram"></i></a>
+            <a href="https://wa.me/79991234567" target="_blank" class="wa-f"><i class="fa-brands fa-whatsapp"></i></a>
+        </div>
+
+        <div class="footer-info">
+            <p>&copy; 2023 YOUR STYLE. Все права защищены.</p>
+        </div>
+    </footer>
 
     <div class="modal-overlay" id="modal">
         <div class="card">
@@ -330,8 +395,6 @@
             try {
                 const res = await fetch(`${API_BASE}/get_services`);
                 const responseData = await res.json();
-
-                // Путь согласно вашему формату: { success: true, data: [...] }
                 const services = responseData.data || [];
 
                 servicesContainer.innerHTML = '';
@@ -343,7 +406,6 @@
                 }
 
                 services.forEach(service => {
-                    // 1. Создание карточки для сетки
                     const card = document.createElement('div');
                     card.className = 'service-card';
                     card.innerHTML = `
@@ -363,12 +425,9 @@
                         </div>
                     `;
                     servicesContainer.appendChild(card);
-
-                    // 2. Наполнение выпадающего списка в форме
                     serviceSelect.add(new Option(`${service.name} (${service.price} ₽)`, service.id));
                 });
 
-                // Загрузка мастеров
                 const resMasters = await fetch(`${API_BASE}/masters/`);
                 const masters = await resMasters.json();
                 masterSelect.innerHTML = '<option value="">-- Выберите мастера --</option>';
@@ -387,7 +446,6 @@
             serviceSelect.value = id;
         }
 
-        // Загрузка времени мастера
         masterSelect.addEventListener('change', async () => {
             if (!masterSelect.value) {
                 timeSelect.disabled = true;
@@ -404,7 +462,6 @@
             } catch (e) { console.error("Time load error:", e); }
         });
 
-        // Отправка формы
         appForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
