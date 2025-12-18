@@ -17,8 +17,18 @@ def create_services(serviceCreate: ServiceCreate,
     result = service_services.create_services(
         name=serviceCreate.name,
         description=serviceCreate.description,
-        price=serviceCreate.price
+        price=serviceCreate.price,
+        photo_url=serviceCreate.photo_url,
     )
 
     return {"status": "success",
             "data": result}
+
+@router.get("/get_services")
+def get_services(db: Session = Depends(get_db)):
+
+    service_services = ServicesService(db)
+
+    result = service_services.get_all_services()
+
+    return result

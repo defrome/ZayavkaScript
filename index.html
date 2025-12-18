@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YOUR STYLE | Современная парикмахерская в Москве</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a1a1a;
+            --accent: #000000;
+            --bg: #ffffff;
+            --bg-secondary: #f8fafc;
+            --card-bg: #ffffff;
+            --input-border: #e2e8f0;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --error: #ef4444;
+            --success: #10b981;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* --- Навигация --- */
+        header {
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .logo { font-weight: 700; font-size: 24px; letter-spacing: -1px; }
+        .nav-links a { text-decoration: none; color: var(--text-main); margin-left: 30px; font-size: 14px; font-weight: 500; transition: var(--transition); }
+        .nav-links a:hover { color: var(--text-muted); }
+
+        /* --- Hero Section --- */
+        .hero {
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+            background: radial-gradient(circle at top right, #f8fafc, #ffffff);
+        }
+
+        .hero h1 { font-size: clamp(40px, 8vw, 80px); font-weight: 700; line-height: 1.1; margin-bottom: 20px; letter-spacing: -0.04em; }
+        .hero p { font-size: clamp(16px, 2vw, 20px); color: var(--text-muted); max-width: 600px; margin-bottom: 40px; }
+
+        .btn-main {
+            padding: 18px 40px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-main:hover { transform: scale(1.05); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+
+        /* --- Секция Услуг --- */
+        .services-section { padding: 100px 5%; background: var(--bg-secondary); }
+        .section-title { text-align: center; margin-bottom: 60px; }
+        .section-title h2 { font-size: 42px; font-weight: 700; letter-spacing: -1px; margin-bottom: 10px; }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* --- Стили Карточки (Объединенные) --- */
+        .service-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            overflow: hidden;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #f1f5f9;
+        }
+
+        .service-card:hover { transform: translateY(-10px); box-shadow: 0 30px 60px -12px rgba(0,0,0,0.1); }
+
+        .service-img-wrapper {
+            width: 100%;
+            height: 220px;
+            overflow: hidden;
+            background: #e2e8f0;
+        }
+
+        .service-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .service-card:hover .service-img { transform: scale(1.1); }
+
+        .service-content {
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .service-name { font-size: 20px; font-weight: 600; margin-bottom: 8px; color: var(--primary); }
+        .service-desc { font-size: 14px; color: var(--text-muted); margin-bottom: 20px; flex-grow: 1; }
+
+        .service-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .service-price { font-size: 22px; font-weight: 700; color: var(--accent); }
+
+        .btn-select {
+            padding: 10px 20px;
+            background: #f1f5f9;
+            color: var(--primary);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .btn-select:hover { background: var(--accent); color: white; }
+
+        /* --- Модальное окно --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(8px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active { display: flex; opacity: 1; }
+
+        .card {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 28px;
+            width: 95%;
+            max-width: 480px;
+            position: relative;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-overlay.active .card { transform: translateY(0); }
+
+        .close-modal {
+            position: absolute;
+            top: 20px; right: 20px;
+            background: #f1f5f9;
+            border: none;
+            width: 35px; height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* --- Форма записи --- */
+        .form-header { text-align: center; margin-bottom: 30px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 500; }
+        select, input {
+            width: 100%; padding: 13px; border: 1px solid var(--input-border);
+            border-radius: 12px; outline: none; transition: var(--transition); font-size: 15px;
+        }
+        select:focus, input:focus { border-color: var(--accent); }
+
+        .submit-btn {
+            width: 100%; padding: 16px; background: var(--accent); color: #fff;
+            border: none; border-radius: 12px; font-weight: 600; cursor: pointer; transition: var(--transition);
+        }
+        .submit-btn:hover { opacity: 0.9; }
+
+        .message { margin-top: 20px; padding: 15px; border-radius: 12px; display: none; text-align: center; font-size: 14px; }
+        .error { background: #fef2f2; color: var(--error); }
+        .success { background: #f0fdf4; color: var(--success); }
+
+        .loader { text-align: center; padding: 40px; color: var(--text-muted); grid-column: 1 / -1; }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero h1 { font-size: 42px; }
+            .services-section { padding: 60px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">YOUR STYLE.</div>
+        <nav class="nav-links">
+            <a href="#services">Услуги</a>
+            <a href="#">Мастера</a>
+            <a href="#">Контакты</a>
+        </nav>
+        <button class="btn-main" style="padding: 10px 25px; font-size: 14px;" onclick="toggleModal()">Записаться</button>
+    </header>
+
+    <section class="hero">
+        <h1>Стиль, доступный каждому</h1>
+        <p>Премиальное качество процедур в самом центре Москвы. Запишитесь онлайн за 30 секунд.</p>
+        <button class="btn-main" onclick="toggleModal()">Записаться на визит</button>
+    </section>
+
+    <section class="services-section" id="services">
+        <div class="section-title">
+            <h2>Наши услуги</h2>
+            <p>Выберите подходящую процедуру</p>
+        </div>
+        <div id="services-container" class="services-grid">
+            <div class="loader">Загрузка прейскуранта...</div>
+        </div>
+    </section>
+
+    <div class="modal-overlay" id="modal">
+        <div class="card">
+            <button class="close-modal" onclick="toggleModal()">&times;</button>
+            <div class="form-header">
+                <h2>Онлайн-запись</h2>
+                <p style="color: var(--text-muted); font-size: 14px;">Заполните данные для визита</p>
+            </div>
+
+            <form id="appForm">
+                <div class="form-group">
+                    <label>Услуга</label>
+                    <select id="service_id" required>
+                        <option value="">Загрузка списка услуг...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Мастер</label>
+                    <select id="master_id" required>
+                        <option value="">Выберите мастера...</option>
+                    </select>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="form-group">
+                        <label>Дата</label>
+                        <input type="date" id="date" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Время</label>
+                        <select id="time_slot" required disabled>
+                            <option value="">Слот</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Имя</label>
+                    <input type="text" id="name" placeholder="Как к вам обращаться?" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Телефон</label>
+                    <input type="tel" id="telephone_number" placeholder="+7..." required>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">Подтвердить запись</button>
+            </form>
+            <div id="statusMsg" class="message"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = "http://127.0.0.1:8000";
+        const modal = document.getElementById('modal');
+        const servicesContainer = document.getElementById('services-container');
+        const serviceSelect = document.getElementById('service_id');
+        const masterSelect = document.getElementById('master_id');
+        const timeSelect = document.getElementById('time_slot');
+        const appForm = document.getElementById('appForm');
+        const statusMsg = document.getElementById('statusMsg');
+
+        function toggleModal() {
+            modal.classList.toggle('active');
+            document.body.style.overflow = modal.classList.contains('active') ? 'hidden' : 'auto';
+            if (!modal.classList.contains('active')) {
+                statusMsg.style.display = 'none';
+            }
+        }
+
+        modal.addEventListener('click', (e) => { if (e.target === modal) toggleModal(); });
+
+        async function initData() {
+            try {
+                const res = await fetch(`${API_BASE}/get_services`);
+                const responseData = await res.json();
+
+                // Путь согласно вашему формату: { success: true, data: [...] }
+                const services = responseData.data || [];
+
+                servicesContainer.innerHTML = '';
+                serviceSelect.innerHTML = '<option value="">-- Выберите услугу --</option>';
+
+                if (services.length === 0) {
+                    servicesContainer.innerHTML = '<div class="loader">На данный момент услуги отсутствуют.</div>';
+                    return;
+                }
+
+                services.forEach(service => {
+                    // 1. Создание карточки для сетки
+                    const card = document.createElement('div');
+                    card.className = 'service-card';
+                    card.innerHTML = `
+                        <div class="service-img-wrapper">
+                            <img src="${service.photo || 'https://via.placeholder.com/400x300?text=No+Photo'}"
+                                 class="service-img"
+                                 alt="${service.name}"
+                                 onerror="this.src='https://via.placeholder.com/400x300?text=Photo+Error'">
+                        </div>
+                        <div class="service-content">
+                            <div class="service-name">${service.name}</div>
+                            <div class="service-desc">${service.description || ''}</div>
+                            <div class="service-footer">
+                                <span class="service-price">${service.price} ₽</span>
+                                <button class="btn-select" onclick="openBookingWithService(${service.id})">Выбрать</button>
+                            </div>
+                        </div>
+                    `;
+                    servicesContainer.appendChild(card);
+
+                    // 2. Наполнение выпадающего списка в форме
+                    serviceSelect.add(new Option(`${service.name} (${service.price} ₽)`, service.id));
+                });
+
+                // Загрузка мастеров
+                const resMasters = await fetch(`${API_BASE}/masters/`);
+                const masters = await resMasters.json();
+                masterSelect.innerHTML = '<option value="">-- Выберите мастера --</option>';
+                if(Array.isArray(masters)) {
+                    masters.forEach(m => masterSelect.add(new Option(m.name, m.id)));
+                }
+
+            } catch (e) {
+                console.error("Fetch error:", e);
+                servicesContainer.innerHTML = '<div class="loader">Ошибка загрузки. Проверьте соединение с сервером.</div>';
+            }
+        }
+
+        function openBookingWithService(id) {
+            toggleModal();
+            serviceSelect.value = id;
+        }
+
+        // Загрузка времени мастера
+        masterSelect.addEventListener('change', async () => {
+            if (!masterSelect.value) {
+                timeSelect.disabled = true;
+                return;
+            }
+            timeSelect.innerHTML = '<option>Загрузка...</option>';
+            try {
+                const res = await fetch(`${API_BASE}/masters/${masterSelect.value}/times/`);
+                const data = await res.json();
+                const slots = data.times || [];
+                timeSelect.innerHTML = '<option value="">Время</option>';
+                slots.forEach(t => timeSelect.add(new Option(t.time_slot, t.time_slot)));
+                timeSelect.disabled = false;
+            } catch (e) { console.error("Time load error:", e); }
+        });
+
+        // Отправка формы
+        appForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.innerText = 'Обработка...';
+
+            const payload = {
+                service_id: parseInt(serviceSelect.value),
+                date: document.getElementById('date').value,
+                name: document.getElementById('name').value,
+                telephone_number: document.getElementById('telephone_number').value,
+                time_slot: timeSelect.value,
+                master_name: masterSelect.options[masterSelect.selectedIndex].text
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/applications/create_application`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    statusMsg.innerText = "Вы успешно записаны!";
+                    statusMsg.className = "message success";
+                    statusMsg.style.display = "block";
+                    appForm.reset();
+                    setTimeout(toggleModal, 2000);
+                } else {
+                    const err = await response.json();
+                    statusMsg.innerText = err.detail || "Ошибка бронирования";
+                    statusMsg.className = "message error";
+                    statusMsg.style.display = "block";
+                }
+            } catch (e) {
+                statusMsg.innerText = "Ошибка сервера";
+                statusMsg.className = "message error";
+                statusMsg.style.display = "block";
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Подтвердить запись';
+            }
+        });
+
+        initData();
+    </script>
+</body>
+</html>

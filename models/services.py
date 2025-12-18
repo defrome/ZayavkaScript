@@ -9,5 +9,6 @@ class Service(Base):
     name = Column(String)
     description = Column(String(100))
     price = Column(Integer)
+    photo_url = Column(String)
 
 

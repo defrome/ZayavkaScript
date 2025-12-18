@@ -12,3 +12,4 @@ class ServiceCreate(BaseModel):
     name: str
     description: str
     price: int
+    photo_url: str
