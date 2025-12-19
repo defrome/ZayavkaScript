@@ -16,6 +16,11 @@ class MasterResponse(BaseModel):
     class Config:
         from_attributes = True
 
+class MasterListEnvelope(BaseModel):
+    status: str
+    data: List[MasterResponse]
+    source: str
+
 class MasterTimeCreate(BaseModel):
     time_slot: str
 

@@ -2,21 +2,33 @@ from typing import List, Dict, Any
 from fastapi import APIRouter, Depends, Form, HTTPException, status
 from sqlalchemy.orm import Session, joinedload
 from database.db import get_db
+from database.redis_client import get_cache, set_cache
 from models import Master, MasterTime
-from schemas.masters import MasterResponse, MasterTimeCreate
+from schemas.masters import MasterResponse, MasterTimeCreate, MasterListEnvelope
 from services.masters import MasterService
 
 router = APIRouter(prefix="/masters", tags=["masters"])
 
-@router.get("/", response_model=List[MasterResponse])
-def get_all_masters(
-        db: Session = Depends(get_db)
-):
-    """
-    Получить список всех мастеров с их расписанием
-    """
+from fastapi.encoders import jsonable_encoder
+
+
+@router.get("/", response_model=MasterListEnvelope)
+def get_all_masters(db: Session = Depends(get_db)):
+    cached_masters = get_cache("all_masters")
+    if cached_masters:
+        return {"status": "success", "data": cached_masters, "source": "cache"}
+
     masters = db.query(Master).all()
-    return masters
+
+    masters_json = jsonable_encoder(masters)
+
+    set_cache("all_masters", masters_json)
+
+    return {
+        "status": "success",
+        "data": masters,
+        "source": "db"
+    }
 
 
 @router.get("/{master_id}/times/", response_model=Dict[str, Any])
