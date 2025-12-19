@@ -8,7 +8,6 @@ services:
       - "8000:8000"
     volumes:
       - .:/app
-      - ./applications.db:/app/applications.db
     environment:
       - REDIS_HOST=redis_cache
       - REDIS_PORT=6379
