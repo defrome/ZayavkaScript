@@ -1,8 +1,14 @@
+import os
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, DeclarativeBase
 
-# Только такой путь для Docker!
-engine = create_engine("sqlite:////app/applications.db", connect_args={"check_same_thread": False})
+if os.path.exists("/.dockerenv") or os.environ.get("REDIS_HOST"):
+    DATABASE_URL = "sqlite:////app/applications.db"
+else:
+    DATABASE_URL = "sqlite:///./applications.db"
+
+engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 
 SessionLocal = sessionmaker(autoflush=False, bind=engine)
 
