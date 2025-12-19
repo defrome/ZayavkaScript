@@ -18,7 +18,7 @@ def get_all_masters(db: Session = Depends(get_db)):
     if cached_masters:
         return {"status": "success", "data": cached_masters, "source": "cache"}
 
-    masters = db.query(Master).options(joinedload(Master.times)).all()
+    masters = db.query(Master).all()
 
     masters_json = jsonable_encoder(masters)
     set_cache(cache_key, masters_json)
