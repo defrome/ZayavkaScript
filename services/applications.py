@@ -23,6 +23,11 @@ class ApplicationService:
         self.price = price
         self.date = date or datetime.now().strftime("%d/%m/%Y")
 
+    @staticmethod
+    def get_all_applications(db: Session):
+
+        return db.query(Application).all()
+
     def create_application(self, db: Session, name: str, telephone_number: str,
                            time_slot: str, master_name: str) -> Dict[str, Any]:
         """
