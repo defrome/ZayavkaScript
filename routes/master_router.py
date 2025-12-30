@@ -18,7 +18,7 @@ def get_all_masters(db: Session = Depends(get_db)):
     if cached_masters:
         return {"status": "success", "data": cached_masters, "source": "cache"}
 
-    masters = db.query(Master).all()
+    masters = db.query(Master).options(joinedload(Master.times)).all()
 
     masters_json = jsonable_encoder(masters)
     set_cache(cache_key, masters_json)
@@ -49,19 +49,21 @@ def create_master(name: str = Form(...), db: Session = Depends(get_db)):
 
     return result
 
-@router.post("/{master_id}/times/", response_model=Dict[str, Any])
-def add_timeslot_to_specific_master(
-        master_id: int,
-        time_slot_data: MasterTimeCreate,
-        db: Session = Depends(get_db)
-):
+
+@router.post("/{master_id}/times/")
+def add_timeslot_to_specific_master(master_id: int, time_slot_data: MasterTimeCreate, db: Session = Depends(get_db)):
     master_service = MasterService(db)
+
     result = master_service.add_time_to_master(
         master_id=master_id,
         time_slot=time_slot_data.time_slot
     )
 
-    delete_cache(f"master_times_{master_id}")
+    updated_times = master_service.get_master_times(master_id)
+
+    cache_key = f"master_times_{master_id}"
+    set_cache(cache_key, jsonable_encoder(updated_times))
+
     delete_cache("all_masters")
 
     return result
