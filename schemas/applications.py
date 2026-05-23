@@ -7,6 +7,7 @@ from models.application import ApplicationSource, ApplicationStatus
 
 class ApplicationCreatePublic(BaseModel):
     service_id: int
+    master_id: int | None = None
     name: str = Field(min_length=2, max_length=120)
     telephone_number: str = Field(min_length=5, max_length=30)
     appointment_date: date

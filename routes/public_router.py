@@ -87,6 +87,7 @@ def create_public_application(payload: ApplicationCreatePublic, db: Session = De
     app_service = ApplicationService(db)
     created = app_service.create_public_application(
         service_id=payload.service_id,
+        master_id=payload.master_id,
         name=payload.name,
         telephone_number=payload.telephone_number,
         appointment_date=payload.appointment_date,

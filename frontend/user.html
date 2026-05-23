@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Запись клиента</title>
+    <link rel="stylesheet" href="/assets/styles.css" />
+    <script src="/assets/user.js" defer></script>
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero">
+        <p class="eyebrow">Пользовательский тест</p>
+        <h1>Запись на услугу</h1>
+        <p>Выберите услугу, укажите дату и время, затем отправьте заявку.</p>
+      </section>
+
+      <div class="grid">
+        <section class="panel">
+          <div class="toolbar">
+            <h2>Заявка</h2>
+            <span class="pill" id="services-status">загрузка услуг</span>
+          </div>
+
+          <div id="user-message" class="message"></div>
+
+          <form id="application-form" class="stack">
+            <label>
+              Услуга
+              <select id="service-select" required></select>
+            </label>
+
+            <div class="row two">
+              <label>
+                Имя
+                <input id="name" name="name" minlength="2" required />
+              </label>
+              <label>
+                Телефон
+                <input id="phone" name="phone" minlength="5" required />
+              </label>
+            </div>
+
+            <div class="row two">
+              <label>
+                Дата
+                <input id="appointment-date" type="date" required />
+              </label>
+              <label>
+                Время
+                <input id="time-slot" type="time" required />
+              </label>
+            </div>
+            <label>
+              Мастер (опционально)
+              <select id="master-select">
+                <option value="">Любой мастер</option>
+              </select>
+            </label>
+
+            <label>
+              Комментарий
+              <textarea id="comment" maxlength="500" placeholder="По желанию"></textarea>
+            </label>
+
+            <button type="submit">Отправить заявку</button>
+          </form>
+        </section>
+
+        <section class="panel">
+          <div class="toolbar">
+            <h2>Доступные услуги</h2>
+            <span class="pill">API /api/v1/public/services</span>
+          </div>
+          <div id="services-list" class="cards"></div>
+          <div style="height: 16px"></div>
+          <div class="toolbar">
+            <h3>Мастера на дату</h3>
+            <button type="button" id="reload-masters" class="ghost">Обновить</button>
+          </div>
+          <div id="masters-list" class="cards"></div>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>

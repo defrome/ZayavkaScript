@@ -1,11 +1,13 @@
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 import uvicorn
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 from starlette.middleware.cors import CORSMiddleware
 
 from database.db import create_tables
-from routes import admin_router, public_router
+from routes import admin_panel_router, admin_router, public_router
 
 
 @asynccontextmanager
@@ -26,6 +28,8 @@ app.add_middleware(
 
 app.include_router(public_router.router)
 app.include_router(admin_router.router)
+app.include_router(admin_panel_router.router)
+app.mount("/assets", StaticFiles(directory=Path(__file__).resolve().parent / "frontend"), name="assets")
 
 
 if __name__ == "__main__":

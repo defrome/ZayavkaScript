@@ -104,6 +104,7 @@ class ApplicationService:
     def create_public_application(
         self,
         service_id: int,
+        master_id: int | None,
         name: str,
         telephone_number: str,
         appointment_date: date,
@@ -113,11 +114,19 @@ class ApplicationService:
         try:
             service = self._get_service(service_id)
             user = self._get_or_create_user(name=name, telephone_number=telephone_number)
+
+            reserved_master_id = None
+            reserved_slot_id = None
+            if master_id is not None:
+                master, slot = self._reserve_master_slot(master_id, appointment_date, time_slot)
+                reserved_master_id = master.id
+                reserved_slot_id = slot.id
+
             application = Application(
                 service_id=service.id,
                 user_id=user.id,
-                master_id=None,
-                master_time_id=None,
+                master_id=reserved_master_id,
+                master_time_id=reserved_slot_id,
                 appointment_date=appointment_date,
                 time_slot=time_slot,
                 status=ApplicationStatus.NEW,

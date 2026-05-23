@@ -6,7 +6,6 @@ from sqlalchemy.orm import Session
 from database.db import get_db
 from database.redis_client import delete_cache_by_pattern, get_cache, set_cache
 from models.application import ApplicationStatus
-from routes.dependencies import require_admin_token
 from schemas.applications import (
     ApplicationCreateAdmin,
     ApplicationCreateResponse,
@@ -20,7 +19,7 @@ from services.applications import ApplicationService
 from services.masters import MasterService
 from services.services import ServicesService
 
-router = APIRouter(prefix="/api/v1/admin", tags=["admin"], dependencies=[Depends(require_admin_token)])
+router = APIRouter(prefix="/api/v1/admin", tags=["admin"])
 
 
 @router.post("/services")

@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Админка</title>
+    <link rel="stylesheet" href="/assets/styles.css" />
+    <script src="/assets/admin.js" defer></script>
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero">
+        <p class="eyebrow">Админка</p>
+        <h1>Управление заявками</h1>
+        <p>Логин: <strong>admin</strong>. Пароль: <strong>admin</strong>.</p>
+      </section>
+
+      <section id="login-panel" class="panel" style="margin-top: 18px; max-width: 520px">
+        <h2>Вход</h2>
+        <div id="admin-login-message" class="message"></div>
+        <form id="login-form" class="stack">
+          <label>
+            Логин
+            <input id="login" value="admin" autocomplete="username" required />
+          </label>
+          <label>
+            Пароль
+            <input id="password" type="password" value="admin" autocomplete="current-password" required />
+          </label>
+          <button type="submit">Войти</button>
+        </form>
+      </section>
+
+      <section id="admin-app" class="hidden" style="margin-top: 18px">
+        <div class="toolbar" style="margin-bottom: 18px">
+          <div class="pill">Вход выполнен как admin</div>
+          <button type="button" id="logout" class="ghost">Выйти</button>
+        </div>
+
+        <div class="split">
+          <section class="panel">
+            <h2>Создать услугу</h2>
+            <div id="service-message" class="message"></div>
+            <form id="service-form" class="stack">
+              <label>
+                Название
+                <input id="service-name" required />
+              </label>
+              <label>
+                Описание
+                <textarea id="service-description"></textarea>
+              </label>
+              <div class="row two">
+                <label>
+                  Цена
+                  <input id="service-price" type="number" min="0" value="0" required />
+                </label>
+                <label>
+                  Фото URL
+                  <input id="service-photo" />
+                </label>
+              </div>
+              <button type="submit">Создать услугу</button>
+            </form>
+          </section>
+
+          <section class="panel">
+            <h2>Создать мастера</h2>
+            <div id="master-message" class="message"></div>
+            <form id="master-form" class="stack">
+              <label>
+                Имя мастера
+                <input id="master-name" required />
+              </label>
+              <button type="submit">Создать мастера</button>
+            </form>
+
+            <div style="height: 18px"></div>
+
+            <h3>Добавить слот</h3>
+            <form id="time-form" class="stack">
+              <div class="row two">
+                <label>
+                  Мастер
+                  <select id="time-master-id" required></select>
+                </label>
+                <label>
+                  Дата
+                  <input id="time-day" type="date" required />
+                </label>
+              </div>
+              <label>
+                Время
+                <input id="time-slot" type="time" required />
+              </label>
+              <button type="submit">Добавить слот</button>
+            </form>
+          </section>
+        </div>
+
+        <div style="height: 18px"></div>
+
+        <div class="split">
+          <section class="panel">
+            <h2>Новая заявка</h2>
+            <div id="application-message" class="message"></div>
+            <form id="application-form" class="stack">
+              <div class="row two">
+                <label>
+                  Услуга
+                  <select id="application-service-id" required></select>
+                </label>
+                <label>
+                  Мастер
+                  <select id="application-master-id" required></select>
+                </label>
+              </div>
+              <div class="row two">
+                <label>
+                  Имя
+                  <input id="application-name" required />
+                </label>
+                <label>
+                  Телефон
+                  <input id="application-phone" required />
+                </label>
+              </div>
+              <div class="row two">
+                <label>
+                  Дата
+                  <input id="application-date" type="date" required />
+                </label>
+                <label>
+                  Время
+                  <input id="application-time" type="time" required />
+                </label>
+              </div>
+              <label>
+                Комментарий
+                <textarea id="application-comment"></textarea>
+              </label>
+              <button type="submit">Создать заявку</button>
+            </form>
+          </section>
+
+          <section class="panel">
+            <div class="toolbar">
+              <h2>Текущие заявки</h2>
+              <button type="button" id="refresh-applications" class="ghost">Обновить</button>
+            </div>
+            <div id="applications-list" class="table"></div>
+          </section>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
