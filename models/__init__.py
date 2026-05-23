@@ -1,7 +1,14 @@
-# Этот файл инициализирует все модели
-from models.application import Application
+from models.application import Application, ApplicationSource, ApplicationStatus
 from models.masters import Master, MasterTime
 from models.services import Service
 from models.users import User
 
-__all__ = ['Application', 'Master', 'MasterTime', 'User', 'Service']
+__all__ = [
+    "Application",
+    "ApplicationSource",
+    "ApplicationStatus",
+    "Master",
+    "MasterTime",
+    "Service",
+    "User",
+]

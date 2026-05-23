@@ -1,28 +1,36 @@
-from typing import List
+from datetime import date
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict, Field
 
-class TimeResponse(BaseModel):
-    time_slot: str
 
-    class Config:
-        from_attributes = True
+class MasterCreate(BaseModel):
+    name: str = Field(min_length=2, max_length=120)
 
-class MasterResponse(BaseModel):
-    id: int
-    name: str
-    times: List[TimeResponse] = []
-
-    class Config:
-        from_attributes = True
-
-class MasterListEnvelope(BaseModel):
-    status: str
-    data: List[MasterResponse]
-    source: str
 
 class MasterTimeCreate(BaseModel):
-    time_slot: str
+    day: date
+    time_slot: str = Field(pattern=r"^([01]\d|2[0-3]):([0-5]\d)$")
 
-    class Config:
-        from_attributes = True
+
+class MasterTimeRead(BaseModel):
+    id: int
+    day: date
+    time_slot: str
+    is_available: bool
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class MasterRead(BaseModel):
+    id: int
+    name: str
+    is_active: bool
+    times: list[MasterTimeRead]
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class MasterListResponse(BaseModel):
+    status: str
+    data: list[MasterRead]
+    source: str
