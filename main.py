@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
 from database.db import create_tables
-from routes import admin_panel_router, admin_router, public_router
+from routes import admin_router, public_router
 
 
 @asynccontextmanager
@@ -26,7 +26,6 @@ app.add_middleware(
 
 app.include_router(public_router.router)
 app.include_router(admin_router.router)
-app.include_router(admin_panel_router.router)
 
 
 if __name__ == "__main__":
