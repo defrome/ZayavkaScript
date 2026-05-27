@@ -1,86 +1,208 @@
 <!doctype html>
 <html lang="ru">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Запись клиента</title>
-    <link rel="stylesheet" href="/assets/styles.css" />
-    <script src="/assets/user.js" defer></script>
-  </head>
-  <body>
-    <main class="shell">
-      <section class="hero">
-        <p class="eyebrow">Пользовательский тест</p>
-        <h1>Запись на услугу</h1>
-        <p>Выберите услугу, укажите дату и время, затем отправьте заявку.</p>
-      </section>
 
-      <div class="grid">
-        <section class="panel">
-          <div class="toolbar">
-            <h2>Заявка</h2>
-            <span class="pill" id="services-status">загрузка услуг</span>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Запись на услугу</title>
+  <meta name="description" content="Онлайн-запись на услугу. Выберите удобное время и мастера." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="/assets/styles.css" />
+  <script src="/assets/user.js" defer></script>
+</head>
+
+<body>
+  <!-- Background gradient -->
+  <div class="bg-gradient" aria-hidden="true"></div>
+
+  <!-- Toast container -->
+  <div id="toast-container" role="status" aria-live="polite"></div>
+
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div>
+          <div class="sidebar-logo-text">ZayavkaScript</div>
+          <div class="sidebar-logo-sub">Онлайн-запись</div>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <span class="nav-section-label">Навигация</span>
+        <a href="/" class="nav-link active">
+          <i class="fa-solid fa-calendar-check"></i> Запись
+        </a>
+        <a href="/admin" class="nav-link">
+          <i class="fa-solid fa-shield-halved"></i> Панель админа
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-info">
+          <div class="user-avatar"><i class="fa-solid fa-user"></i></div>
+          <div>
+            <div class="user-name">Клиент</div>
+            <div class="user-role">Запись онлайн</div>
           </div>
+        </div>
+      </div>
+    </aside>
 
-          <div id="user-message" class="message"></div>
+    <!-- Main -->
+    <main class="main-content">
+      <header class="page-header">
+        <div class="page-header-left">
+          <h1 class="page-title">Запись на услугу</h1>
+          <p class="page-subtitle">Выберите услугу, мастера и удобное время</p>
+        </div>
+        <div class="page-header-right">
+          <span class="status-pill" id="services-status">
+            загрузка
+          </span>
+        </div>
+      </header>
 
-          <form id="application-form" class="stack">
-            <label>
-              Услуга
-              <select id="service-select" required></select>
-            </label>
+      <div class="page-body">
+        <div class="booking-layout">
 
-            <div class="row two">
-              <label>
-                Имя
-                <input id="name" name="name" minlength="2" required />
-              </label>
-              <label>
-                Телефон
-                <input id="phone" name="phone" minlength="5" required />
-              </label>
+          <!-- LEFT: Form -->
+          <section>
+            <div class="card">
+              <div class="card-header">
+                <h2 class="card-title"><i class="fa-solid fa-pen-to-square"></i> Оформить запись</h2>
+              </div>
+              <div class="card-body">
+                <form id="application-form" class="form-stack">
+                  <!-- Service select -->
+                  <div class="form-group">
+                    <label class="form-label" for="service-select">
+                      <i class="fa-solid fa-tag"></i> Услуга
+                    </label>
+                    <div class="input-wrapper">
+                      <i class="input-icon fa-solid fa-briefcase"></i>
+                      <select id="service-select" class="has-icon" required></select>
+                    </div>
+                  </div>
+
+                  <!-- Name + Phone -->
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label" for="name">
+                        <i class="fa-solid fa-user"></i> Имя
+                      </label>
+                      <div class="input-wrapper">
+                        <i class="input-icon fa-solid fa-user"></i>
+                        <input id="name" name="name" class="has-icon" placeholder="Ваше имя" minlength="2" required />
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label" for="phone">
+                        <i class="fa-solid fa-phone"></i> Телефон
+                      </label>
+                      <div class="input-wrapper">
+                        <i class="input-icon fa-solid fa-phone"></i>
+                        <input id="phone" name="phone" class="has-icon" placeholder="+7 (999) 000-00-00" minlength="5"
+                          required />
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Date + Time -->
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label" for="appointment-date">
+                        <i class="fa-solid fa-calendar"></i> Дата
+                      </label>
+                      <div class="input-wrapper">
+                        <i class="input-icon fa-solid fa-calendar"></i>
+                        <input id="appointment-date" type="date" class="has-icon" required />
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label" for="time-slot">
+                        <i class="fa-solid fa-clock"></i> Время
+                      </label>
+                      <div class="input-wrapper">
+                        <i class="input-icon fa-solid fa-clock"></i>
+                        <input id="time-slot" type="time" class="has-icon" required />
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Master -->
+                  <div class="form-group">
+                    <label class="form-label" for="master-select">
+                      <i class="fa-solid fa-star"></i> Мастер
+                    </label>
+                    <div class="input-wrapper">
+                      <i class="input-icon fa-solid fa-star"></i>
+                      <select id="master-select" class="has-icon">
+                        <option value="">Любой мастер</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Comment -->
+                  <div class="form-group">
+                    <label class="form-label" for="comment">
+                      <i class="fa-solid fa-comment"></i> Комментарий
+                    </label>
+                    <div class="input-wrapper">
+                      <textarea id="comment" class="has-icon" maxlength="500"
+                        placeholder="Пожелания или дополнительная информация..."></textarea>
+                    </div>
+                  </div>
+
+                  <button type="submit" id="submit-btn" class="btn btn-primary btn-full">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    Отправить заявку
+                  </button>
+                </form>
+              </div>
+            </div>
+          </section>
+
+          <!-- RIGHT: Info panel -->
+          <aside>
+            <!-- Services -->
+            <div class="card">
+              <div class="card-header">
+                <h2 class="card-title"><i class="fa-solid fa-list-check"></i> Услуги</h2>
+              </div>
+              <div class="card-body">
+                <div id="services-list" class="cards-grid">
+                  <div class="empty-state">
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+                    <p>Загрузка услуг...</p>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div class="row two">
-              <label>
-                Дата
-                <input id="appointment-date" type="date" required />
-              </label>
-              <label>
-                Время
-                <input id="time-slot" type="time" required />
-              </label>
+            <!-- Masters -->
+            <div class="card mt-16">
+              <div class="card-header">
+                <h2 class="card-title"><i class="fa-solid fa-users"></i> Мастера на дату</h2>
+                <button type="button" id="reload-masters" class="btn btn-ghost btn-sm">
+                  <i class="fa-solid fa-rotate-right"></i> Обновить
+                </button>
+              </div>
+              <div class="card-body">
+                <div id="masters-list" class="cards-grid">
+                  <div class="empty-state">
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+                    <p>Загрузка мастеров...</p>
+                  </div>
+                </div>
+              </div>
             </div>
-            <label>
-              Мастер (опционально)
-              <select id="master-select">
-                <option value="">Любой мастер</option>
-              </select>
-            </label>
-
-            <label>
-              Комментарий
-              <textarea id="comment" maxlength="500" placeholder="По желанию"></textarea>
-            </label>
-
-            <button type="submit">Отправить заявку</button>
-          </form>
-        </section>
-
-        <section class="panel">
-          <div class="toolbar">
-            <h2>Доступные услуги</h2>
-            <span class="pill">API /api/v1/public/services</span>
-          </div>
-          <div id="services-list" class="cards"></div>
-          <div style="height: 16px"></div>
-          <div class="toolbar">
-            <h3>Мастера на дату</h3>
-            <button type="button" id="reload-masters" class="ghost">Обновить</button>
-          </div>
-          <div id="masters-list" class="cards"></div>
-        </section>
+          </aside>
+        </div>
       </div>
     </main>
-  </body>
+  </div>
+</body>
+
 </html>
