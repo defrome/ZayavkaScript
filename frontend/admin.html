@@ -1,157 +1,322 @@
 <!doctype html>
 <html lang="ru">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Админка</title>
-    <link rel="stylesheet" href="/assets/styles.css" />
-    <script src="/assets/admin.js" defer></script>
-  </head>
-  <body>
-    <main class="shell">
-      <section class="hero">
-        <p class="eyebrow">Админка</p>
-        <h1>Управление заявками</h1>
-        <p>Логин: <strong>admin</strong>. Пароль: <strong>admin</strong>.</p>
-      </section>
 
-      <section id="login-panel" class="panel" style="margin-top: 18px; max-width: 520px">
-        <h2>Вход</h2>
-        <div id="admin-login-message" class="message"></div>
-        <form id="login-form" class="stack">
-          <label>
-            Логин
-            <input id="login" value="admin" autocomplete="username" required />
-          </label>
-          <label>
-            Пароль
-            <input id="password" type="password" value="admin" autocomplete="current-password" required />
-          </label>
-          <button type="submit">Войти</button>
-        </form>
-      </section>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Панель администратора</title>
+  <meta name="description" content="Административная панель управления заявками, услугами и мастерами." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="/assets/styles.css" />
+  <script src="/assets/admin.js" defer></script>
+</head>
 
-      <section id="admin-app" class="hidden" style="margin-top: 18px">
-        <div class="toolbar" style="margin-bottom: 18px">
-          <div class="pill">Вход выполнен как admin</div>
-          <button type="button" id="logout" class="ghost">Выйти</button>
+<body>
+  <!-- Background gradient -->
+  <div class="bg-gradient" aria-hidden="true"></div>
+
+  <!-- Toast container -->
+  <div id="toast-container" role="status" aria-live="polite"></div>
+
+  <!-- Login overlay -->
+  <div id="login-screen" class="login-overlay">
+    <div class="login-card">
+      <h1 class="login-title">Вход в систему</h1>
+      <p class="login-subtitle">Введите данные администратора для доступа к панели управления</p>
+      <div id="admin-login-message" class="hidden"></div>
+      <form id="login-form" class="form-stack">
+        <div class="form-group">
+          <label class="form-label" for="login"><i class="fa-solid fa-user"></i> Логин</label>
+          <div class="input-wrapper">
+            <i class="input-icon fa-solid fa-user"></i>
+            <input id="login" class="has-icon" value="admin" autocomplete="username" required placeholder="admin" />
+          </div>
         </div>
-
-        <div class="split">
-          <section class="panel">
-            <h2>Создать услугу</h2>
-            <div id="service-message" class="message"></div>
-            <form id="service-form" class="stack">
-              <label>
-                Название
-                <input id="service-name" required />
-              </label>
-              <label>
-                Описание
-                <textarea id="service-description"></textarea>
-              </label>
-              <div class="row two">
-                <label>
-                  Цена
-                  <input id="service-price" type="number" min="0" value="0" required />
-                </label>
-                <label>
-                  Фото URL
-                  <input id="service-photo" />
-                </label>
-              </div>
-              <button type="submit">Создать услугу</button>
-            </form>
-          </section>
-
-          <section class="panel">
-            <h2>Создать мастера</h2>
-            <div id="master-message" class="message"></div>
-            <form id="master-form" class="stack">
-              <label>
-                Имя мастера
-                <input id="master-name" required />
-              </label>
-              <button type="submit">Создать мастера</button>
-            </form>
-
-            <div style="height: 18px"></div>
-
-            <h3>Добавить слот</h3>
-            <form id="time-form" class="stack">
-              <div class="row two">
-                <label>
-                  Мастер
-                  <select id="time-master-id" required></select>
-                </label>
-                <label>
-                  Дата
-                  <input id="time-day" type="date" required />
-                </label>
-              </div>
-              <label>
-                Время
-                <input id="time-slot" type="time" required />
-              </label>
-              <button type="submit">Добавить слот</button>
-            </form>
-          </section>
+        <div class="form-group">
+          <label class="form-label" for="password"><i class="fa-solid fa-lock"></i> Пароль</label>
+          <div class="input-wrapper">
+            <i class="input-icon fa-solid fa-lock"></i>
+            <input id="password" type="password" class="has-icon" value="admin" autocomplete="current-password" required
+              placeholder="••••••••" />
+          </div>
         </div>
+        <button type="submit" id="login-btn" class="btn btn-primary btn-full" style="margin-top:8px">
+          <i class="fa-solid fa-arrow-right-to-bracket"></i> Войти
+        </button>
+      </form>
+    </div>
+  </div>
 
-        <div style="height: 18px"></div>
+  <!-- App (hidden until login) -->
+  <div id="admin-app" class="app-layout hidden">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div>
+          <div class="sidebar-logo-text">ZayavkaScript</div>
+          <div class="sidebar-logo-sub">Панель управления</div>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <span class="nav-section-label">Управление</span>
+        <button class="nav-link active" data-tab="tab-applications" id="nav-applications">
+          <i class="fa-solid fa-list-check"></i> Заявки
+        </button>
+        <button class="nav-link" data-tab="tab-services" id="nav-services">
+          <i class="fa-solid fa-tag"></i> Услуги
+        </button>
+        <button class="nav-link" data-tab="tab-masters" id="nav-masters">
+          <i class="fa-solid fa-users"></i> Мастера
+        </button>
+        <button class="nav-link" data-tab="tab-slots" id="nav-slots">
+          <i class="fa-solid fa-clock"></i> Слоты
+        </button>
+        <button class="nav-link" data-tab="tab-new-application" id="nav-new-application">
+          <i class="fa-solid fa-plus"></i> Новая заявка
+        </button>
+        <span class="nav-section-label">Сайт</span>
+        <a href="/" class="nav-link">
+          <i class="fa-solid fa-arrow-left"></i> К форме записи
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-info">
+          <div class="user-avatar">AD</div>
+          <div style="flex:1;min-width:0">
+            <div class="user-name">admin</div>
+            <div class="user-role">Администратор</div>
+          </div>
+          <button id="logout" class="btn btn-ghost btn-sm" title="Выйти" style="padding:6px 8px">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          </button>
+        </div>
+      </div>
+    </aside>
 
-        <div class="split">
-          <section class="panel">
-            <h2>Новая заявка</h2>
-            <div id="application-message" class="message"></div>
-            <form id="application-form" class="stack">
-              <div class="row two">
-                <label>
-                  Услуга
-                  <select id="application-service-id" required></select>
-                </label>
-                <label>
-                  Мастер
-                  <select id="application-master-id" required></select>
-                </label>
-              </div>
-              <div class="row two">
-                <label>
-                  Имя
-                  <input id="application-name" required />
-                </label>
-                <label>
-                  Телефон
-                  <input id="application-phone" required />
-                </label>
-              </div>
-              <div class="row two">
-                <label>
-                  Дата
-                  <input id="application-date" type="date" required />
-                </label>
-                <label>
-                  Время
-                  <input id="application-time" type="time" required />
-                </label>
-              </div>
-              <label>
-                Комментарий
-                <textarea id="application-comment"></textarea>
-              </label>
-              <button type="submit">Создать заявку</button>
-            </form>
-          </section>
+    <!-- Main -->
+    <main class="main-content">
+      <header class="page-header">
+        <div class="page-header-left">
+          <h1 class="page-title" id="current-tab-title">Заявки</h1>
+          <p class="page-subtitle" id="current-tab-subtitle">Управление активными заявками</p>
+        </div>
+        <div class="page-header-right">
+          <button id="refresh-applications" class="btn btn-ghost btn-sm">
+            <i class="fa-solid fa-rotate-right"></i> Обновить
+          </button>
+        </div>
+      </header>
 
-          <section class="panel">
-            <div class="toolbar">
-              <h2>Текущие заявки</h2>
-              <button type="button" id="refresh-applications" class="ghost">Обновить</button>
+      <div class="page-body">
+
+        <!-- Tab: Заявки -->
+        <section class="tab-panel active" id="tab-applications">
+          <div id="applications-list" class="cards-grid"></div>
+        </section>
+
+        <!-- Tab: Услуги -->
+        <section class="tab-panel" id="tab-services">
+          <div class="booking-layout">
+            <div class="card">
+              <div class="card-header">
+                <h2 class="card-title"><i class="fa-solid fa-plus"></i> Создать услугу</h2>
+              </div>
+              <div class="card-body">
+                <div id="service-message" class="hidden"></div>
+                <form id="service-form" class="form-stack">
+                  <div class="form-group">
+                    <label class="form-label" for="service-name">Название</label>
+                    <div class="input-wrapper">
+                      <i class="input-icon fa-solid fa-tag"></i>
+                      <input id="service-name" class="has-icon" required placeholder="Название услуги" />
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="service-description">Описание</label>
+                    <textarea id="service-description" placeholder="Краткое описание услуги"></textarea>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label" for="service-price">Цена (₽)</label>
+                      <div class="input-wrapper">
+                        <i class="input-icon fa-solid fa-ruble-sign"></i>
+                        <input id="service-price" type="number" class="has-icon" min="0" value="0" required />
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label" for="service-photo">Фото URL</label>
+                      <div class="input-wrapper">
+                        <i class="input-icon fa-solid fa-image"></i>
+                        <input id="service-photo" class="has-icon" placeholder="https://..." />
+                      </div>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-primary">
+                    <i class="fa-solid fa-plus"></i> Создать услугу
+                  </button>
+                </form>
+              </div>
             </div>
-            <div id="applications-list" class="table"></div>
-          </section>
-        </div>
-      </section>
+            <div class="card">
+              <div class="card-header">
+                <h2 class="card-title"><i class="fa-solid fa-list"></i> Список услуг</h2>
+              </div>
+              <div class="card-body">
+                <div id="services-admin-list" class="cards-grid">
+                  <div class="empty-state"><i class="fa-solid fa-spinner fa-spin"></i>
+                    <p>Загрузка...</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tab: Мастера -->
+        <section class="tab-panel" id="tab-masters">
+          <div style="max-width:560px">
+            <div class="card">
+              <div class="card-header">
+                <h2 class="card-title"><i class="fa-solid fa-user-plus"></i> Создать мастера</h2>
+              </div>
+              <div class="card-body">
+                <div id="master-message" class="hidden"></div>
+                <form id="master-form" class="form-stack">
+                  <div class="form-group">
+                    <label class="form-label" for="master-name">Имя мастера</label>
+                    <div class="input-wrapper">
+                      <i class="input-icon fa-solid fa-user"></i>
+                      <input id="master-name" class="has-icon" required placeholder="Имя и Фамилия" />
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-primary">
+                    <i class="fa-solid fa-plus"></i> Создать мастера
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tab: Слоты -->
+        <section class="tab-panel" id="tab-slots">
+          <div style="max-width:560px">
+            <div class="card">
+              <div class="card-header">
+                <h2 class="card-title"><i class="fa-solid fa-clock"></i> Добавить слот</h2>
+              </div>
+              <div class="card-body">
+                <div id="slot-message" class="hidden"></div>
+                <form id="time-form" class="form-stack">
+                  <div class="form-group">
+                    <label class="form-label" for="time-master-id">Мастер</label>
+                    <div class="input-wrapper">
+                      <i class="input-icon fa-solid fa-user"></i>
+                      <select id="time-master-id" class="has-icon" required></select>
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label" for="time-day">Дата</label>
+                      <div class="input-wrapper">
+                        <i class="input-icon fa-solid fa-calendar"></i>
+                        <input id="time-day" type="date" class="has-icon" required />
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label" for="time-slot">Время</label>
+                      <div class="input-wrapper">
+                        <i class="input-icon fa-solid fa-clock"></i>
+                        <input id="time-slot" type="time" class="has-icon" required />
+                      </div>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-primary">
+                    <i class="fa-solid fa-plus"></i> Добавить слот
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tab: Новая заявка -->
+        <section class="tab-panel" id="tab-new-application">
+          <div style="max-width:700px">
+            <div class="card">
+              <div class="card-header">
+                <h2 class="card-title"><i class="fa-solid fa-file-circle-plus"></i> Создать заявку вручную</h2>
+              </div>
+              <div class="card-body">
+                <div id="application-message" class="hidden"></div>
+                <form id="application-form" class="form-stack">
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label" for="application-service-id">Услуга</label>
+                      <div class="input-wrapper">
+                        <i class="input-icon fa-solid fa-tag"></i>
+                        <select id="application-service-id" class="has-icon" required></select>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label" for="application-master-id">Мастер</label>
+                      <div class="input-wrapper">
+                        <i class="input-icon fa-solid fa-user"></i>
+                        <select id="application-master-id" class="has-icon" required></select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label" for="application-name">Имя клиента</label>
+                      <div class="input-wrapper">
+                        <i class="input-icon fa-solid fa-user"></i>
+                        <input id="application-name" class="has-icon" required placeholder="Имя клиента" />
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label" for="application-phone">Телефон</label>
+                      <div class="input-wrapper">
+                        <i class="input-icon fa-solid fa-phone"></i>
+                        <input id="application-phone" class="has-icon" required placeholder="+7 (999) 000-00-00" />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label" for="application-date">Дата</label>
+                      <div class="input-wrapper">
+                        <i class="input-icon fa-solid fa-calendar"></i>
+                        <input id="application-date" type="date" class="has-icon" required />
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label" for="application-time">Время</label>
+                      <div class="input-wrapper">
+                        <i class="input-icon fa-solid fa-clock"></i>
+                        <input id="application-time" type="time" class="has-icon" required />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="application-comment">Комментарий</label>
+                    <textarea id="application-comment" placeholder="Дополнительная информация..."></textarea>
+                  </div>
+                  <button type="submit" class="btn btn-primary">
+                    <i class="fa-solid fa-paper-plane"></i> Создать заявку
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div><!-- /page-body -->
     </main>
-  </body>
+  </div>
+</body>
+
 </html>
